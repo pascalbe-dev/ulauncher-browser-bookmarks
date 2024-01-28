@@ -6,8 +6,6 @@
 
 ## Demo
 
-TODO: add demo
-
 ## Features
 
 - search and open browser bookmarks
