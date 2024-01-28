@@ -4,6 +4,9 @@
   "description": "Search and launch browser bookmarks",
   "developer_name": "Pascal Betting",
   "icon": "images/chromium.png",
+  "options": {
+    "query_debounce": 0.1
+  },
   "preferences": [
     {
       "id": "keyword",
