@@ -1,0 +1,16 @@
+{
+  "required_api_version": "^2.0.0",
+  "name": "Browser Bookmarks",
+  "description": "Search and launch browser bookmarks",
+  "developer_name": "Pascal Betting",
+  "icon": "images/chromium.png",
+  "preferences": [
+    {
+      "id": "keyword",
+      "type": "keyword",
+      "name": "Browser Bookmarks extension keyword",
+      "description": "The keyword to start the Browser Bookmarks extension",
+      "default_value": "b"
+    }
+  ]
+}
