@@ -6,6 +6,8 @@
 
 ## Demo
 
+https://github.com/pascalbe-dev/ulauncher-browser-bookmarks/assets/26909176/c39d9610-fe8d-4e1f-89e5-cff483bd1992
+
 ## Features
 
 - search and open browser bookmarks
