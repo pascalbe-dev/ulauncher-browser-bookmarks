@@ -11,7 +11,7 @@
     {
       "id": "keyword",
       "type": "keyword",
-      "name": "Browser Bookmarks extension keyword",
+      "name": "Browser Bookmarks extension",
       "description": "The keyword to start the Browser Bookmarks extension",
       "default_value": "b"
     }
