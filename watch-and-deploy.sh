@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# exit on error
+set -e
+
+# TO NOTE: this is a workaround in vscode for this issue: https://github.com/ros2/ros2/issues/1406#issuecomment-1500898231
+unset GTK_PATH
+
 ln -sf $(pwd) ~/.local/share/ulauncher/extensions/
 
 # restart ulauncher
