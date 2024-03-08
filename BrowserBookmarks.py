@@ -82,6 +82,7 @@ class BrowserBookmarks(Extension):
             with open(bookmarks_path) as data_file:
                 data = json.load(data_file)
                 self.find_rec(data['roots']['bookmark_bar'], query, matches)
+                self.find_rec(data['roots']['synced'], query, matches)
                 self.find_rec(data['roots']['other'], query, matches)
 
             for bookmark in matches:
