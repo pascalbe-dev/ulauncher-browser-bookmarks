@@ -1,4 +1,4 @@
-from ChromeBookmarks import ChromeBookmarks
+from BrowserBookmarks import BrowserBookmarks
 
 if __name__ == '__main__':
-    ChromeBookmarks().run()
+    BrowserBookmarks().run()

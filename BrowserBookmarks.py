@@ -27,13 +27,13 @@ class KeywordQueryEventListener(EventListener):
         return RenderResultListAction(items)
 
 
-class ChromeBookmarks(Extension):
+class BrowserBookmarks(Extension):
     matches_len = 0
     max_matches_len = 10
 
     def __init__(self):
         self.bookmarks_paths = self.find_bookmarks_paths()
-        super(ChromeBookmarks, self).__init__()
+        super(BrowserBookmarks, self).__init__()
         self.subscribe(KeywordQueryEvent, KeywordQueryEventListener())
 
     @staticmethod
