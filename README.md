@@ -38,8 +38,8 @@ Please refer to [the contribution guidelines](./CONTRIBUTING.md)
 
 ### Steps
 
-1. Clone the repo `git clone https://github.com/pascalbe-dev/ulauncher-todoist-capture.git`
-2. Cd into the folder `cd ulauncher-todoist-capture`
+1. Clone the repo `git clone https://github.com/pascalbe-dev/ulauncher-browser-bookmarks.git`
+2. Cd into the folder `cd ulauncher-browser-bookmarks`
 3. Watch and deploy your extension locally for simple developing and testing in parallel `./watch-and-deploy.sh` (this will restart ulauncher without extensions and deploy this extension at the beginning and each time a file in this directory changes)
 4. Check the extension log `less /tmp/ulauncher-extension.log +F`
 5. Check ulauncher dev log `less /tmp/ulauncher.log +F`
