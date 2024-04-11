@@ -9,7 +9,7 @@ unset GTK_PATH
 ln -sf $(pwd) ~/.local/share/ulauncher/extensions/
 
 # restart ulauncher
-pkill ulauncher
+pkill ulauncher || true
 ulauncher --no-extensions --dev -v > /tmp/ulauncher.log 2>&1 &
 
 sleep 2
