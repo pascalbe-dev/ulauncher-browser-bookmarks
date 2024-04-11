@@ -53,27 +53,31 @@ class BrowserBookmarks(Extension):
             logger.exception('Path to the Chrome Bookmarks was not found')
         return res_lst
 
-    def find_rec(self, data, query, matches):
-
+    def find_rec(self, bookmark_entry, query, matches):
         if self.matches_len >= self.max_matches_len:
             return
 
-        if data['type'] == 'folder':
-            for child in data['children']:
-                self.find_rec(child, query, matches)
+        if bookmark_entry['type'] == 'folder':
+            for child_bookmark_entry in bookmark_entry['children']:
+                self.find_rec(child_bookmark_entry, query, matches)
         else:
-            res = data['name'].lower().find(query.lower())
-            if res != -1:
-                matches.append(data)
-                self.matches_len += 1
+            sub_queries = query.split(' ')
+            bookmark_title = bookmark_entry['name']
+
+            if not self.contains_all_substrings(bookmark_title, sub_queries):
+                return
+
+            matches.append(bookmark_entry)
+            self.matches_len += 1
 
     def get_items(self, query):
-
         items = []
         self.matches_len = 0
 
         if query is None:
             query = ''
+
+        logger.debug('Finding bookmark entries for query %s' % query)
 
         for bookmarks_path, browser in self.bookmarks_paths:
 
@@ -97,3 +101,9 @@ class BrowserBookmarks(Extension):
                 items.append(item)
 
         return items
+
+    def contains_all_substrings(self, text, substrings):
+        for substring in substrings:
+            if substring.lower() not in text.lower():
+                return False
+        return True

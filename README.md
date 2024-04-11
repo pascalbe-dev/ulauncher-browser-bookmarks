@@ -11,6 +11,8 @@ https://github.com/pascalbe-dev/ulauncher-browser-bookmarks/assets/26909176/c39d
 ## Features
 
 - search and open browser bookmarks
+  - search by single text (must be contained in the bookmark title)
+  - search by multiple texts split by space (all must be contained in the bookmark title)
 - supports multiple browser profiles
 - supports multiple browsers (Google Chrome, Chromium, Brave)
 
