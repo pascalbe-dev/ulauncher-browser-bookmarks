@@ -13,11 +13,18 @@ from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
-support_browsers = ['google-chrome', 'chromium', 'Brave-Browser']
+support_browsers = [
+    'google-chrome',
+    'chromium', 
+    'Brave-Browser',
+    'BraveSoftware'
+]
+
 browser_imgs = {
     'google-chrome': 'images/chrome.png',
     'chromium': 'images/chromium.png',
     'Brave-Browser': 'images/brave.png',
+    'BraveSoftware': 'images/brave.png'
 }
 
 
