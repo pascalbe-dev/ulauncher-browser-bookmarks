@@ -7,7 +7,7 @@ from ulauncher.api.client.EventListener import EventListener
 from ulauncher.api.client.Extension import Extension
 from ulauncher.api.shared.action.OpenUrlAction import OpenUrlAction
 from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
-from ulauncher.api.shared.event import ItemEnterEvent, KeywordQueryEvent
+from ulauncher.api.shared.event import KeywordQueryEvent
 from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 
 # Swap the following two lines to enable/disable logging to file debug.log in this directory
@@ -59,10 +59,16 @@ class BrowserBookmarks(Extension):
         """
         res_lst: List[Tuple[str, str]] = []
         for browser in support_browsers:
+            res: list[str] = []
+            
             f = os.popen("find $HOME/.config/%s | grep Bookmarks" % browser)
-            res = f.read().split("\n")
+            res += f.read().split("\n")
             f.close()
 
+            f = os.popen("find $HOME/snap/%s/current/.config/%s | grep Bookmarks" % (browser, browser))
+            res += f.read().split("\n")
+            f.close()
+            
             if len(res) == 0:
                 logger.info("No path to the %s Bookmarks was not found" % browser)
                 continue
