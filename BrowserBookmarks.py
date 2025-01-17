@@ -70,7 +70,7 @@ class BrowserBookmarks(Extension):
             f.close()
             
             if len(res) == 0:
-                logger.info("No path to the %s Bookmarks was not found" % browser)
+                logger.info("Path to the %s Bookmarks was not found" % browser)
                 continue
             for one_path in res:
                 if one_path.endswith("Bookmarks"):
