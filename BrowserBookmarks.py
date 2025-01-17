@@ -53,22 +53,24 @@ class BrowserBookmarks(Extension):
     def find_bookmarks_paths() -> List[Tuple[str, str]]:
         """
         Searches for the paths to the bookmarks of the supported browsers
-        
+
         Returns:
             List[Tuple[str, str]]: A list of tuples containing the path to the bookmarks and the browser name
         """
         res_lst: List[Tuple[str, str]] = []
         for browser in support_browsers:
             res: list[str] = []
-            
-            f = os.popen("find $HOME/.config/%s | grep Bookmarks" % browser)
-            res += f.read().split("\n")
-            f.close()
 
-            f = os.popen("find $HOME/snap/%s/current/.config/%s | grep Bookmarks" % (browser, browser))
-            res += f.read().split("\n")
-            f.close()
-            
+            searchable_dirs = [
+                "$HOME/.config/%s" % browser,
+                "$HOME/snap/%s/current/.config/%s" % (browser, browser),
+            ]
+
+            for command in searchable_dirs:
+                f = os.popen("find %s | grep Bookmarks" % (command))
+                res += f.read().split("\n")
+                f.close()
+
             if len(res) == 0:
                 logger.info("Path to the %s Bookmarks was not found" % browser)
                 continue
@@ -85,7 +87,7 @@ class BrowserBookmarks(Extension):
     ) -> None:
         """
         Recursively edits the matches variable with bookmark entries that match the query.
-        
+
         Parameters:
             bookmark_entry (Dict[str, Any]): The bookmark entry to search
             query (str): The query
@@ -110,10 +112,10 @@ class BrowserBookmarks(Extension):
     def get_items(self, query: Union[str, None]) -> List[ExtensionResultItem]:
         """
         Returns a list of ExtensionResultItems for the query, which is rendered by Ulauncher
-        
+
         Parameters:
             query (Union[str, None]): The query being searched
-        
+
         Returns:
             List[ExtensionResultItem]: A list of ExtensionResultItems to be rendered
         """
@@ -150,11 +152,11 @@ class BrowserBookmarks(Extension):
     def contains_all_substrings(self, text: str, substrings: List[str]) -> bool:
         """
         Check if all substrings are in the text
-        
+
         Parameters:
             text (str): The text to match against
-            substrings (List[str]): The substrings to check 
-        
+            substrings (List[str]): The substrings to check
+
         Returns:
             bool: True if all substrings are in the text, False otherwise
         """
