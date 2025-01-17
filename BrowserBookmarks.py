@@ -17,14 +17,16 @@ support_browsers = [
     'google-chrome',
     'chromium', 
     'Brave-Browser',
-    'BraveSoftware'
+    'BraveSoftware',
+    'vivaldi'
 ]
 
 browser_imgs = {
     'google-chrome': 'images/chrome.png',
     'chromium': 'images/chromium.png',
     'Brave-Browser': 'images/brave.png',
-    'BraveSoftware': 'images/brave.png'
+    'BraveSoftware': 'images/brave.png',
+    'vivaldi': 'images/vivaldi.png'
 }
 
 
