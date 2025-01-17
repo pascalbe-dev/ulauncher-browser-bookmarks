@@ -49,7 +49,7 @@ class BrowserBookmarks(Extension):
     def find_bookmarks_paths():
         res_lst = []
         for browser in support_browsers:
-            f = os.popen('find $HOME/.config/%s | grep Bookmarks' % browser)
+            f = os.popen('find $HOME/.config/%s/ | grep Bookmarks' % browser)
             res = f.read().split('\n')
             if len(res) == 0:
                 logger.info('Path to the %s Bookmarks was not found' % browser)
