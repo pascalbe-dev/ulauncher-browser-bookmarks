@@ -11,7 +11,10 @@ from ulauncher.api.shared.event import KeywordQueryEvent
 from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 
 # Swap the following two lines to enable/disable logging to file debug.log in this directory
-# logging.basicConfig(filename="%s/debug.log" % os.path.dirname(os.path.realpath(__file__)))
+# logging.basicConfig(
+#     filename=os.path.join(os.path.dirname(os.path.realpath(__file__)), "debug.log"),
+#     level=logging.DEBUG,
+# )
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
@@ -29,6 +32,7 @@ browser_imgs = {
     "Brave-Browser": "images/brave.png",
     "BraveSoftware": "images/brave.png",
     "vivaldi": "images/vivaldi.png",
+    "custom_path": "images/chrome.png",
 }
 
 
@@ -54,33 +58,69 @@ class BrowserBookmarks(Extension):
         """
         Searches for the paths to the bookmarks of the supported browsers
 
+        If the environment variable CUSTOM_BROWSER_FOLDER is set, it will be used as the path to the bookmarks
+
         Returns:
             List[Tuple[str, str]]: A list of tuples containing the path to the bookmarks and the browser name
         """
-        res_lst: List[Tuple[str, str]] = []
-        for browser in support_browsers:
-            res: list[str] = []
+        found_bookmarks: List[Tuple[str, str]] = []
+        browser_path_env: str | None = os.getenv("CUSTOM_BROWSER_FOLDER")
 
-            searchable_dirs = [
+        for browser in support_browsers:
+            potential_bookmark_paths = [
                 "$HOME/.config/%s" % browser,
                 "$HOME/snap/%s/current/.config/%s" % (browser, browser),
             ]
 
-            for command in searchable_dirs:
-                f = os.popen("find %s | grep Bookmarks" % (command))
-                res += f.read().split("\n")
-                f.close()
+            found_bookmarks.extend(
+                BrowserBookmarks.collect_bookmarks_paths(
+                    potential_bookmark_paths, browser
+                )
+            )
 
-            if len(res) == 0:
-                logger.info("Path to the %s Bookmarks was not found" % browser)
-                continue
-            for one_path in res:
-                if one_path.endswith("Bookmarks"):
-                    res_lst.append((one_path, browser))
+        if browser_path_env:
+            custom_paths: List[str] = list(browser_path_env.split(":"))
+            logger.info(
+                "Custom browser paths found, searching through: %s" % custom_paths
+            )
+            found_bookmarks.extend(
+                BrowserBookmarks.collect_bookmarks_paths(custom_paths, "custom_path")
+            )
 
-        if len(res_lst) == 0:
-            logger.exception("Path to the Chrome Bookmarks was not found")
-        return res_lst
+        if len(found_bookmarks) == 0:
+            logger.exception("No Bookmarks were found")
+
+        return found_bookmarks
+
+    @staticmethod
+    def collect_bookmarks_paths(dirs: list[str], browser: str) -> List[Tuple[str, str]]:
+        """
+        Collects the paths to the bookmarks of the browser
+
+        Parameters:
+            dirs (list[str]): The directories to search in
+            browser (str): The browser name (used to match the icon)
+
+        Returns:
+            List[Tuple[str, str]]: A list of tuples containing the path to the bookmarks and the browser name
+        """
+        grep_results: List[str] = []
+
+        for command in dirs:
+            f = os.popen("find %s | grep Bookmarks" % (command))
+            grep_results.extend(f.read().split("\n"))
+            f.close()
+
+        if len(grep_results) == 0:
+            logger.info("Path to the %s Bookmarks was not found" % browser)
+            return []
+
+        bookmarks_paths: List[Tuple[str, str]] = []
+        for one_path in grep_results:
+            if one_path.endswith("Bookmarks"):
+                bookmarks_paths.append((one_path, browser))
+
+        return bookmarks_paths
 
     def find_rec(
         self, bookmark_entry: Dict[str, Any], query: str, matches: List[Dict[str, Any]]
