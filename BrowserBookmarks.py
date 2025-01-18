@@ -7,10 +7,14 @@ from ulauncher.api.client.EventListener import EventListener
 from ulauncher.api.client.Extension import Extension
 from ulauncher.api.shared.action.OpenUrlAction import OpenUrlAction
 from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
-from ulauncher.api.shared.event import KeywordQueryEvent
+from ulauncher.api.shared.event import (
+    KeywordQueryEvent,
+    PreferencesEvent,
+    PreferencesUpdateEvent,
+)
 from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 
-# Swap the following two lines to enable/disable logging to file debug.log in this directory
+# Swap the two logging configs to enable/disable logging to file debug.log in this directory
 # logging.basicConfig(
 #     filename=os.path.join(os.path.dirname(os.path.realpath(__file__)), "debug.log"),
 #     level=logging.DEBUG,
@@ -32,8 +36,32 @@ browser_imgs = {
     "Brave-Browser": "images/brave.png",
     "BraveSoftware": "images/brave.png",
     "vivaldi": "images/vivaldi.png",
-    "custom_path": "images/chrome.png",
+    "custom_path": "images/chromium.png",
 }
+
+
+class PreferencesEventListener(EventListener):
+    def on_event(
+        self,
+        event: Union[PreferencesEvent, PreferencesUpdateEvent],
+        extension: "BrowserBookmarks",
+    ) -> None:
+        """
+        Listens for preference events and updates the extension preferences. Then updates the bookmarks paths.
+        
+        Parameters:
+            event (Union[PreferencesEvent, PreferencesUpdateEvent]): The event to listen for
+            extension (BrowserBookmarks): The extension to update
+        """
+        if isinstance(event, PreferencesUpdateEvent):
+            if event.id == "keyword":
+                return
+            extension.preferences[event.id] = event.new_value
+        elif isinstance(event, PreferencesEvent):
+            assert isinstance(event.preferences, dict)
+            extension.preferences = event.preferences
+        # Could be optimized so it only refreshes the custom paths
+        extension.bookmarks_paths = extension.find_bookmarks_paths()
 
 
 class KeywordQueryEventListener(EventListener):
@@ -47,24 +75,27 @@ class KeywordQueryEventListener(EventListener):
 class BrowserBookmarks(Extension):
     matches_len = 0
     max_matches_len = 10
+    bookmarks_paths: List[Tuple[str, str]]
 
     def __init__(self):
-        self.bookmarks_paths = self.find_bookmarks_paths()
         super(BrowserBookmarks, self).__init__()
+
+        # Subscribe to preference events
+        self.subscribe(PreferencesEvent, PreferencesEventListener())
+        self.subscribe(PreferencesUpdateEvent, PreferencesEventListener())
+
+        # Subscribe to keyword query events
         self.subscribe(KeywordQueryEvent, KeywordQueryEventListener())
 
-    @staticmethod
-    def find_bookmarks_paths() -> List[Tuple[str, str]]:
+    def find_bookmarks_paths(self) -> List[Tuple[str, str]]:
         """
-        Searches for the paths to the bookmarks of the supported browsers
-
-        If the environment variable CUSTOM_BROWSER_FOLDER is set, it will be used as the path to the bookmarks
+        Searches for bookmarks by supported browsers and custom paths
 
         Returns:
             List[Tuple[str, str]]: A list of tuples containing the path to the bookmarks and the browser name
         """
         found_bookmarks: List[Tuple[str, str]] = []
-        browser_path_env: str | None = os.getenv("CUSTOM_BROWSER_FOLDER")
+        additional_browser_paths = self.preferences["additional_browser_paths"]
 
         for browser in support_browsers:
             potential_bookmark_paths = [
@@ -78,8 +109,8 @@ class BrowserBookmarks(Extension):
                 )
             )
 
-        if browser_path_env:
-            custom_paths: List[str] = list(browser_path_env.split(":"))
+        if additional_browser_paths:
+            custom_paths: List[str] = list(additional_browser_paths.split(":"))
             logger.info(
                 "Custom browser paths found, searching through: %s" % custom_paths
             )
@@ -93,12 +124,12 @@ class BrowserBookmarks(Extension):
         return found_bookmarks
 
     @staticmethod
-    def collect_bookmarks_paths(dirs: list[str], browser: str) -> List[Tuple[str, str]]:
+    def collect_bookmarks_paths(dirs: List[str], browser: str) -> List[Tuple[str, str]]:
         """
         Collects the paths to the bookmarks of the browser
 
         Parameters:
-            dirs (list[str]): The directories to search in
+            dirs (List[str]): The directories to search in
             browser (str): The browser name (used to match the icon)
 
         Returns:
