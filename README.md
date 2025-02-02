@@ -43,10 +43,19 @@ Please refer to [the contribution guidelines](./CONTRIBUTING.md)
 - `less` package installed
 - `inotify-tools` package installed
 
-### Steps
+### Getting started
 
 1. Clone the repo `git clone https://github.com/pascalbe-dev/ulauncher-browser-bookmarks.git`
 2. Cd into the folder `cd ulauncher-browser-bookmarks`
-3. Watch and deploy your extension locally for simple developing and testing in parallel `./watch-and-deploy.sh` (this will restart ulauncher without extensions and deploy this extension at the beginning and each time a file in this directory changes)
-4. Check the extension log `less /tmp/ulauncher-extension.log +F`
-5. Check ulauncher dev log `less /tmp/ulauncher.log +F`
+
+### Quality insurance
+
+- install the ruff via `pip install -r requirements.txt`
+- run formatting via `ruff format`
+- run linting via `ruff check`
+
+### Local testing
+
+1. Watch and deploy your extension locally for simple developing and testing in parallel `./watch-and-deploy.sh` (this will restart ulauncher without extensions and deploy this extension at the beginning and each time a file in this directory changes)
+2. Check the extension log `less /tmp/ulauncher-extension.log +F`
+3. Check ulauncher dev log `less /tmp/ulauncher.log +F`

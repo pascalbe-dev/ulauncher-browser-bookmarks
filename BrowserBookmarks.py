@@ -48,7 +48,7 @@ class PreferencesEventListener(EventListener):
     ) -> None:
         """
         Listens for preference events and updates the extension preferences. Then updates the bookmarks paths.
-        
+
         Parameters:
             event (Union[PreferencesEvent, PreferencesUpdateEvent]): The event to listen for
             extension (BrowserBookmarks): The extension to update
