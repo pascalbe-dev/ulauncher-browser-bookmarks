@@ -19,6 +19,7 @@ https://github.com/pascalbe-dev/ulauncher-browser-bookmarks/assets/26909176/c39d
   - Chromium
   - Brave
   - Vivaldi
+  - other chromium based browsers by specifying the browser config path in the extension settings
 
 ## Requirements
 
