@@ -24,4 +24,4 @@ jobs:
       - name: Run formatting checks
         run: ruff format
       - name: Run linting checks
-        run: ruff lint
+        run: ruff check
