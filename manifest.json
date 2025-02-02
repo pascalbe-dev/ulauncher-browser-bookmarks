@@ -14,6 +14,13 @@
       "name": "Browser Bookmarks extension",
       "description": "The keyword to start the Browser Bookmarks extension",
       "default_value": "b"
+    },
+    {
+      "id": "additional_browser_paths",
+      "type": "text",
+      "name": "Additional browser paths",
+      "description": "Additional paths to search for browser bookmarks, separated by a colon",
+      "default_value": ""
     }
   ]
 }

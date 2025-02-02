@@ -27,7 +27,7 @@ startExtension() {
 startExtension
 
 echo "Waiting for file changes ..."
-while inotifywait -qqre modify "$(pwd)/"; do
+while inotifywait -qqre modify --exclude 'debug.log' "$(pwd)/"; do
     echo "Files have changed..."
     echo "Killing extension process: $pid"
     kill $pid
