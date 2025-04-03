@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from typing import Any, List, Tuple, Dict, Union
+from querier import BookmarkQuerier
 
 from ulauncher.api.client.EventListener import EventListener
 from ulauncher.api.client.Extension import Extension
@@ -164,6 +165,7 @@ class BrowserBookmarks(Extension):
             query (str): The query
             matches (List[Dict[str, Any]]): The list to append matches to
         """
+
         if self.matches_len >= self.max_matches_len:
             return
 
@@ -198,14 +200,16 @@ class BrowserBookmarks(Extension):
 
         logger.debug("Finding bookmark entries for query %s" % query)
 
+        querier = BookmarkQuerier()
+
         for bookmarks_path, browser in self.bookmarks_paths:
             matches: List[Dict[str, str | Dict[str, str]]] = []
 
             with open(bookmarks_path) as data_file:
                 data = json.load(data_file)
-                self.find_rec(data["roots"]["bookmark_bar"], query, matches)
-                self.find_rec(data["roots"]["synced"], query, matches)
-                self.find_rec(data["roots"]["other"], query, matches)
+                querier.search(data["roots"]["bookmark_bar"], query, matches)
+                querier.search(data["roots"]["synced"], query, matches)
+                querier.search(data["roots"]["other"], query, matches)
 
             for bookmark in matches:
                 bookmark_name: bytes = str(bookmark["name"]).encode("utf-8")
