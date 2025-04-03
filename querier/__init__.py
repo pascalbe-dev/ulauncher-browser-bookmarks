@@ -1,1 +1,1 @@
-from .BookmarkQuerier import BookmarkQuerier
+from .BookmarkQuerier import BookmarkQuerier as BookmarkQuerier
