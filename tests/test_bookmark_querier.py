@@ -3,11 +3,9 @@ from querier import BookmarkQuerier
 
 class TestBookmarkQuerierNoFilterByFolders(unittest.TestCase):
     def setUp(self):
-        self.querier = BookmarkQuerier(
-            filter_by_folders=False
-        )
+        self.querier = BookmarkQuerier()
 
-    def test_contains_all_substrings(self):
+    def test_by_default_does_not_filter_by_folders(self):
         test_bookmarks = {
             "type": "folder",
             "name": "root",
@@ -128,11 +126,8 @@ class TestBookmarkQuerierFilterByFolders(unittest.TestCase):
             ]
         }
         
-        querier = BookmarkQuerier(
-            filter_by_folders=True
-        )
         matches = []
-        querier.search(many_bookmarks, "Test", matches)
+        self.querier.search(many_bookmarks, "Test", matches)
         self.assertEqual(len(matches), 10)  # Should stop at max_matches_len 
 
     def test_search_matches_parent_folder(self):
@@ -177,11 +172,8 @@ class TestBookmarkQuerierFilterByFolders(unittest.TestCase):
             ]
         }
         
-        querier = BookmarkQuerier(
-            filter_by_folders=True
-        )
         matches = []
-        querier.search(bookmarks, "python documentation", matches)
+        self.querier.search(bookmarks, "python documentation", matches)
         
         self.assertEqual(len(matches), 1)
         self.assertEqual(matches[0]["name"], "Documentation")
@@ -189,7 +181,7 @@ class TestBookmarkQuerierFilterByFolders(unittest.TestCase):
 
         # Make sure to consider URL matches as well
         matches = []
-        querier.search(bookmarks, "python learn", matches)
+        self.querier.search(bookmarks, "python learn", matches)
         
         self.assertEqual(len(matches), 1)
         self.assertEqual(matches[0]["name"], "Python Tutorial")
@@ -197,34 +189,34 @@ class TestBookmarkQuerierFilterByFolders(unittest.TestCase):
 
         # Test that it still works with just the bookmark name
         matches = []
-        querier.search(bookmarks, "documentation", matches)
+        self.querier.search(bookmarks, "documentation", matches)
         self.assertEqual(len(matches), 1)
 
         # Test that it matches folder and subfolder
         matches = []
-        querier.search(bookmarks, "python advanced", matches)
+        self.querier.search(bookmarks, "python advanced", matches)
         self.assertEqual(len(matches), 1)
 
         matches = []
-        querier.search(bookmarks, "tutorial", matches)
+        self.querier.search(bookmarks, "tutorial", matches)
         self.assertEqual(len(matches), 3)
         self.assertEqual(matches[0]["name"], "git tutorial")
 
         matches = []
-        querier.search(bookmarks, "advanced tutorial", matches)
+        self.querier.search(bookmarks, "advanced tutorial", matches)
         self.assertEqual(len(matches), 1)
         self.assertEqual(matches[0]["name"], "Python Tricks Tutorial")
 
         # Test that it matches when both parent and bookmark match
         # Should match: python/* && python/Advanced/*
         matches = []
-        querier.search(bookmarks, "python tutorial", matches)
+        self.querier.search(bookmarks, "python tutorial", matches)
         self.assertEqual(len(matches), 2)
         self.assertEqual(matches[0]["name"], "Python Tutorial")
         self.assertEqual(matches[1]["name"], "Python Tricks Tutorial")
         
         # Test that it doesn't match when neither parent nor bookmark match
         matches = []
-        querier.search(bookmarks, "java docs", matches)
+        self.querier.search(bookmarks, "java docs", matches)
         self.assertEqual(len(matches), 0) 
 
