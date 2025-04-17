@@ -8,7 +8,6 @@ class BookmarkQuerier:
             filter_by_folders (bool): Whether to filter by folders
         """
         self.filter_by_folders = filter_by_folders
-        self.matches_len = 0
         self.max_matches_len = 10
 
     def search(
@@ -25,7 +24,7 @@ class BookmarkQuerier:
             matches (List[Dict[str, Any]]): The list to append matches to
             parent_name (str, optional): The name of the parent folder
         """
-        if self.matches_len >= self.max_matches_len:
+        if len(matches) >= self.max_matches_len:
             return
 
         if bookmark_entry["type"] == "folder":
@@ -45,7 +44,6 @@ class BookmarkQuerier:
                 return
 
             matches.append(bookmark_entry)
-            self.matches_len += 1
 
     def contains_all_substrings(self, text: str, substrings: List[str]) -> bool:
         """

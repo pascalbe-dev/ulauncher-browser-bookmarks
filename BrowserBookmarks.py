@@ -74,7 +74,6 @@ class KeywordQueryEventListener(EventListener):
 
 
 class BrowserBookmarks(Extension):
-    matches_len = 0
     max_matches_len = 10
     bookmarks_paths: List[Tuple[str, str]]
 
@@ -154,34 +153,6 @@ class BrowserBookmarks(Extension):
 
         return bookmarks_paths
 
-    def find_rec(
-        self, bookmark_entry: Dict[str, Any], query: str, matches: List[Dict[str, Any]]
-    ) -> None:
-        """
-        Recursively edits the matches variable with bookmark entries that match the query.
-
-        Parameters:
-            bookmark_entry (Dict[str, Any]): The bookmark entry to search
-            query (str): The query
-            matches (List[Dict[str, Any]]): The list to append matches to
-        """
-
-        if self.matches_len >= self.max_matches_len:
-            return
-
-        if bookmark_entry["type"] == "folder":
-            for child_bookmark_entry in bookmark_entry["children"]:
-                self.find_rec(child_bookmark_entry, query, matches)
-        else:
-            sub_queries = query.split(" ")
-            bookmark_title = bookmark_entry["name"]
-
-            if not self.contains_all_substrings(bookmark_title, sub_queries):
-                return
-
-            matches.append(bookmark_entry)
-            self.matches_len += 1
-
     def get_items(self, query: Union[str, None]) -> List[ExtensionResultItem]:
         """
         Returns a list of ExtensionResultItems for the query, which is rendered by Ulauncher
@@ -193,18 +164,15 @@ class BrowserBookmarks(Extension):
             List[ExtensionResultItem]: A list of ExtensionResultItems to be rendered
         """
         items: List[ExtensionResultItem] = []
-        self.matches_len = 0
 
         if query is None:
             query = ""
 
         logger.debug("Finding bookmark entries for query %s" % query)
 
-        filter_by_folders = self.preferences["filter_by_folders"]
         querier = BookmarkQuerier(
-            filter_by_folders=filter_by_folders,
+            filter_by_folders=self.preferences["filter_by_folders"],
         )
-
 
         for bookmarks_path, browser in self.bookmarks_paths:
             matches: List[Dict[str, str | Dict[str, str]]] = []
@@ -227,19 +195,3 @@ class BrowserBookmarks(Extension):
                 items.append(item)
 
         return items
-
-    def contains_all_substrings(self, text: str, substrings: List[str]) -> bool:
-        """
-        Check if all substrings are in the text
-
-        Parameters:
-            text (str): The text to match against
-            substrings (List[str]): The substrings to check
-
-        Returns:
-            bool: True if all substrings are in the text, False otherwise
-        """
-        for substring in substrings:
-            if substring.lower() not in text.lower():
-                return False
-        return True
