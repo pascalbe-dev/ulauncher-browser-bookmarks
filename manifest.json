@@ -25,7 +25,7 @@
     {
       "id": "filter_by_folders",
       "type": "select",
-      "name": "Filter by folders (yes/no)",
+      "name": "Filter by folders",
       "description": "When enabled, takes into account the folder structure of bookmarks while filtering",
       "default_value": false,
       "options": [
