@@ -200,7 +200,11 @@ class BrowserBookmarks(Extension):
 
         logger.debug("Finding bookmark entries for query %s" % query)
 
-        querier = BookmarkQuerier()
+        filter_by_folders = self.preferences["filter_by_folders"]
+        querier = BookmarkQuerier(
+            filter_by_folders=filter_by_folders,
+        )
+
 
         for bookmarks_path, browser in self.bookmarks_paths:
             matches: List[Dict[str, str | Dict[str, str]]] = []

@@ -1,7 +1,62 @@
 import unittest
 from querier import BookmarkQuerier
 
-class TestBookmarkQuerier(unittest.TestCase):
+class TestBookmarkQuerierNoFilterByFolders(unittest.TestCase):
+    def setUp(self):
+        self.querier = BookmarkQuerier(
+            filter_by_folders=False
+        )
+
+    def test_contains_all_substrings(self):
+        test_bookmarks = {
+            "type": "folder",
+            "name": "root",
+            "children": [
+                {
+                    "type": "bookmark",
+                    "name": "Google Search",
+                    "url": "https://google.com"
+                },
+                {
+                    "type": "bookmark",
+                    "name": "Google profile",
+                    "url": "https://me.google.com"
+                },
+                {
+                    "type": "folder",
+                    "name": "Social Media",
+                    "children": [
+                        {
+                            "type": "bookmark",
+                            "name": "GitHub Profile",
+                            "url": "https://github.com"
+                        },
+                        {
+                            "type": "bookmark",
+                            "name": "LinkedIn profile",
+                            "url": "https://linkedin.com"
+                        }
+                    ]
+                }
+            ]
+        }
+
+        matches = []
+        self.querier.search(test_bookmarks, "google", matches)
+        self.assertEqual(len(matches), 2)
+        self.assertEqual(matches[0]["name"], "Google Search")
+        self.assertEqual(matches[1]["name"], "Google profile")
+
+        matches = []
+        self.querier.search(test_bookmarks, "profile", matches)
+        self.assertEqual(len(matches), 3)
+
+        matches = []
+        self.querier.search(test_bookmarks, "google profile", matches)
+        self.assertEqual(len(matches), 1)
+    
+
+class TestBookmarkQuerierFilterByFolders(unittest.TestCase):
     def setUp(self):
         # Sample bookmark structure for testing
         self.test_bookmarks = {
@@ -31,7 +86,9 @@ class TestBookmarkQuerier(unittest.TestCase):
                 }
             ]
         }
-        self.querier = BookmarkQuerier()
+        self.querier = BookmarkQuerier(
+            filter_by_folders=True
+        )
 
     def test_contains_all_substrings(self):
         # Test basic substring matching
@@ -71,7 +128,9 @@ class TestBookmarkQuerier(unittest.TestCase):
             ]
         }
         
-        querier = BookmarkQuerier()
+        querier = BookmarkQuerier(
+            filter_by_folders=True
+        )
         matches = []
         querier.search(many_bookmarks, "Test", matches)
         self.assertEqual(len(matches), 10)  # Should stop at max_matches_len 
@@ -118,7 +177,9 @@ class TestBookmarkQuerier(unittest.TestCase):
             ]
         }
         
-        querier = BookmarkQuerier()
+        querier = BookmarkQuerier(
+            filter_by_folders=True
+        )
         matches = []
         querier.search(bookmarks, "python documentation", matches)
         
@@ -166,3 +227,4 @@ class TestBookmarkQuerier(unittest.TestCase):
         matches = []
         querier.search(bookmarks, "java docs", matches)
         self.assertEqual(len(matches), 0) 
+

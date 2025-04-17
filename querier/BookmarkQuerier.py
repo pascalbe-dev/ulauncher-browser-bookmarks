@@ -1,7 +1,13 @@
 from typing import Any, List, Dict
 
 class BookmarkQuerier:
-    def __init__(self):
+    def __init__(self, filter_by_folders: bool = False) -> None:
+        """
+        Initializes the BookmarkQuerier class.
+        Parameters:
+            filter_by_folders (bool): Whether to filter by folders
+        """
+        self.filter_by_folders = filter_by_folders
         self.matches_len = 0
         self.max_matches_len = 10
 
@@ -28,11 +34,11 @@ class BookmarkQuerier:
         else:
             sub_queries = query.split(" ")
             bookmark_title = bookmark_entry["name"]
-            bookmark_url = bookmark_entry["url"]
+            bookmark_url = bookmark_entry.get("url", "")
             
             # Create search text that includes parent folder name, bookmark name and URL
             search_text = f"{bookmark_title} {bookmark_url}"
-            if parent_name:
+            if parent_name and self.filter_by_folders:
                 search_text = f"{parent_name} {search_text}"
 
             if not self.contains_all_substrings(search_text, sub_queries):

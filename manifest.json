@@ -21,6 +21,17 @@
       "name": "Additional browser paths",
       "description": "Additional paths to search for browser bookmarks, separated by a colon",
       "default_value": ""
+    },
+    {
+      "id": "filter_by_folders",
+      "type": "select",
+      "name": "Filter by folders (yes/no)",
+      "description": "When enabled, takes into account the folder structure of bookmarks while filtering",
+      "default_value": false,
+      "options": [
+          {"text": "Disabled", "value": false},
+          {"text": "Enabled", "value": true}
+      ]
     }
   ]
 }
