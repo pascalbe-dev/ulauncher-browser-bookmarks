@@ -28,8 +28,9 @@ class BookmarkQuerier:
             return
 
         if bookmark_entry["type"] == "folder":
+            parent_tree = f"{parent_name} {bookmark_entry['name']}"
             for child_bookmark_entry in bookmark_entry["children"]:
-                self.search(child_bookmark_entry, query, matches, bookmark_entry["name"])
+                self.search(child_bookmark_entry, query, matches, parent_tree)
         else:
             sub_queries = query.split(" ")
             bookmark_title = bookmark_entry["name"]

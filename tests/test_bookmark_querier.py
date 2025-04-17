@@ -80,6 +80,7 @@ class TestBookmarkQuerierFilterByFolders(unittest.TestCase):
                             "name": "LinkedIn Page",
                             "url": "https://linkedin.com"
                         }
+
                     ]
                 }
             ]
@@ -163,6 +164,45 @@ class TestBookmarkQuerierFilterByFolders(unittest.TestCase):
                                     "type": "bookmark",
                                     "name": "Python Tricks Tutorial",
                                     "url": "https://realpython.com"
+                                },
+                                {
+                                    "type": "bookmark",
+                                    "name": "Zen of Python",
+                                    "url": "https://peps.python.org/pep-0020/"
+                                }
+                            ]
+                        }
+
+                    ]
+                },
+                {
+                    "type": "folder",
+                    "name": "Typescript",
+                    "children": [
+                        {
+                            "type": "bookmark",
+                            "name": "Documentation",
+                            "url": "https://docs.typescript.org"
+                        },
+                        {
+                            "type": "bookmark",
+                            "name": "Typescript Tutorial",
+                            "url": "https://learn.typescript.org"
+                        },
+                        # Test subfolder
+                        {
+                            "type": "folder",
+                            "name": "Advanced",
+                            "children": [
+                                {
+                                    "type": "bookmark",
+                                    "name": "Typescript Tricks Tutorial",
+                                    "url": "https://typescript.org"
+                                },
+                                {
+                                    "type": "bookmark",
+                                    "name": "Zen of Typescript",
+                                    "url": "https://notfound.com"
                                 }
                             ]
                         }
@@ -174,7 +214,6 @@ class TestBookmarkQuerierFilterByFolders(unittest.TestCase):
         
         matches = []
         self.querier.search(bookmarks, "python documentation", matches)
-        
         self.assertEqual(len(matches), 1)
         self.assertEqual(matches[0]["name"], "Documentation")
         self.assertEqual(matches[0]["url"], "https://docs.python.org")
@@ -190,21 +229,28 @@ class TestBookmarkQuerierFilterByFolders(unittest.TestCase):
         # Test that it still works with just the bookmark name
         matches = []
         self.querier.search(bookmarks, "documentation", matches)
-        self.assertEqual(len(matches), 1)
+        self.assertEqual(len(matches), 2)
+        # Matches python documentation
+        self.assertEqual(matches[0]["name"], "Documentation")
+        self.assertEqual(matches[0]["url"], "https://docs.python.org")
+        # Matches typescript documentation
+        self.assertEqual(matches[1]["name"], "Documentation")
+        self.assertEqual(matches[1]["url"], "https://docs.typescript.org")
+        
 
         # Test that it matches folder and subfolder
         matches = []
         self.querier.search(bookmarks, "python advanced", matches)
-        self.assertEqual(len(matches), 1)
+        self.assertEqual(len(matches), 2)
 
         matches = []
         self.querier.search(bookmarks, "tutorial", matches)
-        self.assertEqual(len(matches), 3)
+        self.assertEqual(len(matches), 5)
         self.assertEqual(matches[0]["name"], "git tutorial")
 
         matches = []
         self.querier.search(bookmarks, "advanced tutorial", matches)
-        self.assertEqual(len(matches), 1)
+        self.assertEqual(len(matches), 2)
         self.assertEqual(matches[0]["name"], "Python Tricks Tutorial")
 
         # Test that it matches when both parent and bookmark match
