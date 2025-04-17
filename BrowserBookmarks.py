@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from typing import Any, List, Tuple, Dict, Union
+from typing import List, Tuple, Dict, Union
 from querier import BookmarkQuerier
 
 from ulauncher.api.client.EventListener import EventListener
