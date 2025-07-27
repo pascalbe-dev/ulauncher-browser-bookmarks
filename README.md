@@ -48,7 +48,7 @@ Please refer to [the contribution guidelines](./CONTRIBUTING.md)
 1. Clone the repo `git clone https://github.com/pascalbe-dev/ulauncher-browser-bookmarks.git`
 2. Cd into the folder `cd ulauncher-browser-bookmarks`
 
-### Quality insurance
+### Quality assurance
 
 - install the ruff via `pip install -r requirements.txt`
 - run formatting via `ruff format`
